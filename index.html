@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Conquer the Star</title>
+<style>
+:root{--bg:#05060f;--p1:#0d1226;--p2:#161d3a;--ln:#2a3566;--tx:#e8ecff;--mu:#8d97c4;--ac:#6ea8ff;--gd:#fbbf24;--gm:#5eead4;--rd:#f43f5e}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow:hidden}
+#app{max-width:520px;height:100dvh;margin:0 auto;position:relative;background:radial-gradient(ellipse at top,#121a3a,var(--bg) 70%)}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;cursor:pointer}
+input,select,textarea{font:inherit;color:var(--tx);background:#0a0f20;border:1px solid var(--ln);border-radius:10px;padding:10px;width:100%}
+.btn{background:linear-gradient(#3b5bdb,#2b3fa8);border:1px solid #6ea8ff55;border-radius:10px;padding:9px 14px;font-weight:600}
+.btn.sm{padding:6px 10px;font-size:13px}.btn.gold{background:linear-gradient(#f59e0b,#b45309)}.btn.red{background:linear-gradient(#e11d48,#9f1239)}.btn.gray{background:#232b52}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+#auth{height:100%;display:flex;flex-direction:column;justify-content:center;padding:24px;gap:12px}
+#auth h1{margin:0;text-align:center;font-size:34px;letter-spacing:1px;background:linear-gradient(90deg,#6ea8ff,#c084fc,#fbbf24);-webkit-background-clip:text;color:transparent}
+#auth .sub{text-align:center;color:var(--mu);margin:0 0 8px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tabs button{flex:1;background:var(--p2);border:1px solid var(--ln);border-radius:10px;padding:8px 6px;font-size:13px;white-space:nowrap}
+.tabs button.on{background:#3b5bdb;border-color:#6ea8ff}
+#authMsg{min-height:20px;text-align:center;color:#fca5a5;font-size:14px}
+.foot{text-align:center;color:var(--mu);font-size:12px;padding:6px}
+#game{height:100%;display:flex;flex-direction:column}
+#top{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--p1);border-bottom:1px solid var(--ln)}
+.av{position:relative;width:52px;height:52px;border-radius:50%;border:2px solid var(--ac);background:var(--p2);font-size:28px;padding:0;flex:none}
+.av span{position:absolute;right:-4px;bottom:-4px;background:#3b5bdb;border-radius:8px;font-size:11px;padding:1px 5px;border:1px solid #fff3}
+.pinfo{flex:1;min-width:0}.pinfo b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pinfo small{color:var(--mu);font-size:12px}
+.bar{height:6px;background:#0a0f20;border-radius:4px;overflow:hidden;margin-top:3px}.bar i{display:block;height:100%;background:linear-gradient(90deg,#6ea8ff,#c084fc);width:0}
+.cur{display:flex;flex-direction:column;gap:2px;font-size:13px;text-align:right}
+#stagebar{text-align:center;padding:5px;font-size:13px;color:var(--mu);background:#0a0f20}
+#cvwrap{flex:1;min-height:180px;position:relative}
+#cv{position:absolute;inset:0;width:100%;height:100%}
+#skillbar{display:flex;gap:10px;justify-content:center;padding:8px;background:var(--p1)}
+.sk{position:relative;width:58px;height:58px;border-radius:50%;background:var(--p2);border:2px solid var(--ln);font-size:26px;overflow:hidden;padding:0}
+.sk .cdov{position:absolute;left:0;right:0;bottom:0;background:#000a;height:0}
+.sk small{position:absolute;bottom:1px;left:0;right:0;font-size:9px}
+#menu{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:8px;background:var(--p1);border-top:1px solid var(--ln)}
+#menu button{background:var(--p2);border:1px solid var(--ln);border-radius:12px;padding:8px 2px;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px}
+#menu button b{font-size:22px;font-weight:400}
+#modal{position:absolute;inset:0;background:#000b;z-index:20;display:flex;align-items:flex-end}
+#modal .box{width:100%;max-height:92%;background:var(--p1);border-top:2px solid var(--ac);border-radius:18px 18px 0 0;display:flex;flex-direction:column}
+.mh{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--ln);font-size:17px}
+.mh button{background:none;border:none;font-size:20px}
+#mb{padding:12px;overflow-y:auto;flex:1}
+.card{display:flex;gap:10px;align-items:center;background:var(--p2);border:1px solid var(--ln);border-left:4px solid var(--rc,#999);border-radius:12px;padding:10px;margin-bottom:8px}
+.card .ic{font-size:30px;width:44px;text-align:center;flex:none}.card .in{flex:1;min-width:0;font-size:13px}
+.card .in b{font-size:14px}.card .in small{color:var(--mu);display:block}
+.chip{display:inline-block;background:#0a0f20;border:1px solid var(--ln);border-radius:8px;padding:2px 6px;font-size:11px;margin:2px 3px 0 0}
+.rb{display:inline-block;font-size:10px;padding:1px 6px;border-radius:6px;color:#000;font-weight:700;margin-left:4px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px}.chips button{flex:none;background:var(--p2);border:1px solid var(--ln);border-radius:16px;padding:4px 10px;font-size:12px}
+.chips button.on{background:#3b5bdb}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.st{background:var(--p2);border:1px solid var(--ln);border-radius:10px;padding:8px;font-size:13px}
+.avs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:8px 0}.avs button{font-size:24px;background:var(--p2);border:1px solid var(--ln);border-radius:10px;padding:6px 0}.avs button.on{border-color:var(--gd)}
+.row{display:flex;gap:8px;align-items:center;margin:6px 0}.row>*{flex:1}.row label{flex:0 0 38%;font-size:13px;color:var(--mu)}
+h4{margin:12px 0 6px;color:var(--ac)}
+#toast{position:absolute;top:70px;left:50%;transform:translateX(-50%);background:#111a3acc;border:1px solid var(--ac);padding:8px 14px;border-radius:12px;z-index:50;font-size:14px;max-width:90%;text-align:center;pointer-events:none;opacity:0;transition:.25s}
+#toast.show{opacity:1}
+.me{outline:2px solid var(--gd)}
+</style>
+</head>
+<body>
+<div id="app">
+
+<section id="auth" hidden>
+  <h1>⭐ Conquer the Star</h1>
+  <p class="sub">Kultivasi, kumpulkan kekuatan, taklukkan bintang.</p>
+  <div class="tabs"><button id="tabLogin" class="on">Masuk</button><button id="tabReg">Daftar</button></div>
+  <input id="fUser" placeholder="Nama pemain (3-16 karakter)" autocomplete="username" hidden>
+  <input id="fEmail" type="email" placeholder="Email" autocomplete="email">
+  <input id="fPass" type="password" placeholder="Kata sandi (min. 6 karakter)" autocomplete="current-password">
+  <button id="btnAuth" class="btn">Masuk</button>
+  <div id="authMsg"></div>
+  <div class="foot">© SharkArt.evo Education</div>
+</section>
+
+<section id="game" hidden>
+  <header id="top">
+    <button id="avBtn" class="av">🥷<span id="lvBadge">1</span></button>
+    <div class="pinfo"><b id="pName"></b><small id="pRealm"></small><div class="bar"><i id="expBar"></i></div></div>
+    <div class="cur"><span>🪙 <b id="gold">0</b></span><span>💎 <b id="gems">0</b></span></div>
+  </header>
+  <div id="stagebar"></div>
+  <div id="cvwrap"><canvas id="cv"></canvas></div>
+  <div id="skillbar"></div>
+  <nav id="menu">
+    <button data-m="shop"><b>🛒</b>Toko</button>
+    <button data-m="inv"><b>🎒</b>Penyimpanan</button>
+    <button data-m="rank"><b>🏆</b>Peringkat</button>
+    <button data-m="ach"><b>🎖️</b>Pencapaian</button>
+    <button data-m="set"><b>⚙️</b>Pengaturan</button>
+  </nav>
+  <div class="foot">© SharkArt.evo Education</div>
+</section>
+
+<div id="modal" hidden><div class="box"><div class="mh"><b id="mt"></b><button id="mx">✕</button></div><div id="mb"></div></div></div>
+<div id="toast"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ============ KONFIGURASI ============ */
+const SUPABASE_URL = 'GANTI_DENGAN_URL_PROJECT_ANDA';      // contoh: https://abcd1234.supabase.co
+const SUPABASE_ANON_KEY = 'GANTI_DENGAN_ANON_KEY_ANDA';     // Project Settings > API > anon public
+
+const configured = !SUPABASE_URL.startsWith('GANTI');
+const sb = configured ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = n => { n = Math.floor(Number(n) || 0); const a = [[1e12,'T'],[1e9,'B'],[1e6,'M']]; for (const [v,s] of a) if (n >= v) return (n/v).toFixed(2) + s; return n.toLocaleString('id-ID'); };
+
+const RAR = ['basic','elite','special','epic','legend','mythic','ultimate','exclusive'];
+const RCOL = {basic:'#9aa4b2',elite:'#4ade80',special:'#38bdf8',epic:'#a78bfa',legend:'#fbbf24',mythic:'#f43f5e',ultimate:'#f97316',exclusive:'#ff4de3'};
+const EL = {
+  api:{i:'🔥',n:'Api',d:'+% Damage',c:'#ff7a3d'}, air:{i:'💧',n:'Air',d:'+% HP',c:'#38bdf8'},
+  tanah:{i:'🪨',n:'Tanah',d:'+% Defense',c:'#b08968'}, angin:{i:'🌪️',n:'Angin',d:'+% Kecepatan serang',c:'#9be7c4'},
+  petir:{i:'⚡',n:'Petir',d:'+% Peluang kritis',c:'#facc15'}, tumbuhan:{i:'🌿',n:'Tumbuhan',d:'Regenerasi HP',c:'#4ade80'},
+  logam:{i:'⚙️',n:'Logam',d:'-% Damage diterima',c:'#cbd5e1'}, es:{i:'❄️',n:'Es',d:'-% Serangan musuh',c:'#a5f3fc'},
+  cahaya:{i:'✨',n:'Cahaya',d:'+% Gold',c:'#fde68a'}, void:{i:'🕳️',n:'Void',d:'+% Damage kritis',c:'#a855f7'},
+  kegelapan:{i:'🌑',n:'Kegelapan',d:'% Lifesteal',c:'#6b21a8'}
+};
+const AVATARS = ['🥷','🧙','🤺','🦸','🧛','🧝','🥋','👑','🐉','⭐','🦊','🐺'];
+const DEF_CFG = {realms:['Pemula Bela Diri','Prajurit Bela Diri','Panglima Perang','Dewa Perang','Tingkat Planet','Pengelana Bintang','Tingkat Bintang','Penguasa Domain','Penguasa Sektor','Penguasa Semesta','Tuan Semesta','Penakluk Bintang'],max_level:108,max_item_level:50,max_stat_level:100,gold_mult:1,exp_mult:1,upgrade_cost_mult:1};
+
+const S = {user:null,P:null,items:{},inv:[],cfg:{...DEF_CFG},ach:[],claimed:new Set(),pending:{gold:0,exp:0,kills:0},stage:1,hs:null,syncing:false,lastL:1};
+
+/* ============ UI UMUM ============ */
+let toastT;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2600);}
+function modal(title,html){$('#mt').textContent=title;$('#mb').innerHTML=html;$('#modal').hidden=false;$('#mb').scrollTop=0;return $('#mb');}
+function closeModal(){$('#modal').hidden=true;$('#mb').innerHTML='';}
+$('#mx').onclick=closeModal;
+$('#modal').onclick=e=>{if(e.target.id==='modal')closeModal();};
+let AC;
+function beep(f=440,d=.06,type='square',v=.03){
+  if(S.P?.settings?.sfx===false)return;
+  try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+d);}catch(e){}
+}
+async function rpc(name,args){const {data,error}=await sb.rpc(name,args||{});if(error){toast(error.message);throw error;}return data;}
+
+/* ============ RUMUS GAME ============ */
+const need = L => Math.floor(80*Math.pow(L,1.7));
+function curLevel(){let L=S.P.level,e=Number(S.P.exp)+S.pending.exp;const mx=S.cfg.max_level;while(L<mx&&e>=need(L)){e-=need(L);L++;}return{L,e};}
+function realmOf(L){const r=S.cfg.realms;const i=Math.min(r.length-1,Math.floor((L-1)/9));return{i,name:r[i],s:((L-1)%9)+1};}
+const invById = id => S.inv.find(x=>x.id===id);
+const itemStat = (inv,k) => Math.round((S.items[inv.item_id][k]||0)*(1+0.25*(inv.level-1)));
+function passiveTotals(){
+  const eq=S.P.equipment||{},t={};
+  for(const id of [eq.weapon,eq.armor]){const inv=id&&invById(id);if(!inv)continue;
+    for(const p of inv.passives||[])t[p.el]=(t[p.el]||0)+p.pow*(1+0.05*(inv.level-1));}
+  return t;
+}
+function heroStats(){
+  const {L}=curLevel(),rm=realmOf(L),up=S.P.upgrades||{},eq=S.P.equipment||{};
+  const w=eq.weapon&&invById(eq.weapon),a=eq.armor&&invById(eq.armor),pt=passiveTotals(),rb=1+0.25*rm.i;
+  let atk=(10+L*4)*rb*(1+0.05*(up.atk||0))+(w?itemStat(w,'atk'):0);
+  let hp=(100+L*30)*rb*(1+0.05*(up.hp||0))+(a?itemStat(a,'hp'):0);
+  let def=(3+L*1.2)*rb*(1+0.05*(up.def||0))+(a?itemStat(a,'def'):0);
+  atk*=1+(pt.api||0)/100;hp*=1+(pt.air||0)/100;def*=1+(pt.tanah||0)/100;
+  const hs={L,atk,hp,def,pt,
+    crit:Math.min(80,5+0.3*(up.crit||0)+(pt.petir||0)),critDmg:150+(pt.void||0),
+    aspd:Math.min(3.5,1.2*(1+(pt.angin||0)/100)),regen:0.005+(pt.tumbuhan||0)*0.002,
+    red:Math.min(60,pt.logam||0),weak:Math.min(60,pt.es||0),steal:Math.min(50,pt.kegelapan||0)/100,gold:1+(pt.cahaya||0)/100,
+    wRar:w?S.items[w.item_id].rarity:null,aRar:a?S.items[a.item_id].rarity:null};
+  hs.power=Math.floor(atk*3+hp*0.3+def*2);
+  return hs;
+}
+function refreshStats(){S.hs=heroStats();if(B.hp>S.hs.hp)B.hp=S.hs.hp;}
+const upCost = (inv) => {const it=S.items[inv.item_id];const base=it.currency==='gold'?it.price:it.price*1000;return Math.max(1,Math.floor(base*0.1*Math.pow(inv.level,1.4)*S.cfg.upgrade_cost_mult));};
+const statCost = lvl => Math.floor(100*Math.pow(1.15,lvl)*S.cfg.upgrade_cost_mult);
+const rbadge = r => `<span class="rb" style="background:${RCOL[r]}">${r.toUpperCase()}</span>`;
+const passChips = ps => (ps||[]).map(p=>`<span class="chip" style="border-color:${EL[p.el]?.c}">${EL[p.el]?.i} ${EL[p.el]?.n} ${(p.pow).toFixed(1)}%</span>`).join('');
+function itemStatsTxt(it,lvl=1){
+  const m=1+0.25*(lvl-1),o=[];
+  if(it.atk)o.push('⚔️ '+Math.round(it.atk*m));if(it.hp)o.push('❤️ '+Math.round(it.hp*m));if(it.def)o.push('🛡️ '+Math.round(it.def*m));
+  if(it.type==='skill')o.push(`${EL[it.element]?.i||''} x${(it.skill_mult*(1+0.2*(lvl-1))).toFixed(2)} dmg • CD ${it.cooldown}s`);
+  return o.join('  ');
+}
+
+/* ============ AUTH ============ */
+let regMode=false;
+function setMode(r){regMode=r;$('#tabLogin').classList.toggle('on',!r);$('#tabReg').classList.toggle('on',r);$('#fUser').hidden=!r;$('#btnAuth').textContent=r?'Daftar & Main':'Masuk';$('#authMsg').textContent='';}
+$('#tabLogin').onclick=()=>setMode(false);$('#tabReg').onclick=()=>setMode(true);
+function showAuth(msg){$('#game').hidden=true;$('#auth').hidden=false;$('#authMsg').textContent=msg||'';}
+$('#btnAuth').onclick=async()=>{
+  if(!configured)return showAuth('Isi SUPABASE_URL dan SUPABASE_ANON_KEY di index.html lalu muat ulang.');
+  const email=$('#fEmail').value.trim(),password=$('#fPass').value,username=$('#fUser').value.trim();
+  if(!email||password.length<6)return $('#authMsg').textContent='Isi email dan kata sandi (min. 6 karakter).';
+  if(regMode&&!/^[A-Za-z0-9_ ]{3,16}$/.test(username))return $('#authMsg').textContent='Nama 3-16 karakter: huruf, angka, spasi, _';
+  $('#btnAuth').disabled=true;$('#authMsg').textContent='Memproses...';
+  try{
+    let res;
+    if(regMode){res=await sb.auth.signUp({email,password,options:{data:{username}}});
+      if(!res.error&&!res.data.session){$('#btnAuth').disabled=false;return $('#authMsg').textContent='Akun dibuat. Cek email untuk konfirmasi, lalu masuk.';}}
+    else res=await sb.auth.signInWithPassword({email,password});
+    if(res.error)throw res.error;
+    S.user=res.data.user||res.data.session.user;await enter();
+  }catch(e){$('#authMsg').textContent=e.message||'Gagal';}
+  $('#btnAuth').disabled=false;
+};
+
+/* ============ MUAT DATA ============ */
+async function loadAll(){
+  const uid=S.user.id;
+  const [p,it,inv,cf,ac,ua]=await Promise.all([
+    sb.from('profiles').select('*').eq('id',uid).single(),
+    sb.from('items').select('*'),
+    sb.from('inventory').select('*').eq('user_id',uid).order('created_at'),
+    sb.from('game_config').select('*'),
+    sb.from('achievements').select('*').eq('enabled',true).order('target'),
+    sb.from('user_achievements').select('ach_id').eq('user_id',uid)]);
+  for(const r of [p,it,inv,cf,ac,ua])if(r.error)throw r.error;
+  S.P=p.data;S.items={};it.data.forEach(i=>S.items[i.id]=i);S.inv=inv.data;
+  S.cfg={...DEF_CFG};cf.data.forEach(r=>S.cfg[r.key]=r.value);
+  S.ach=ac.data;S.claimed=new Set(ua.data.map(x=>x.ach_id));
+}
+async function refreshProfile(){const {data,error}=await sb.from('profiles').select('*').eq('id',S.user.id).single();if(!error){S.P=data;refreshStats();hud();}}
+async function refreshInv(){const {data,error}=await sb.from('inventory').select('*').eq('user_id',S.user.id).order('created_at');if(!error){S.inv=data;refreshStats();renderSkillBar();}}
+
+async function enter(){
+  try{await loadAll();}catch(e){return showAuth('Gagal memuat data: '+(e.message||e)+' (pastikan supabase.sql sudah dijalankan)');}
+  if(S.P.banned){await sb.auth.signOut();return showAuth('Akun ini diblokir admin.');}
+  $('#auth').hidden=true;$('#game').hidden=false;
+  S.stage=S.P.stage;S.lastL=S.P.level;B.k=0;resize();refreshStats();B.hp=S.hs.hp;spawn();renderSkillBar();hud();
+  if(!loopOn){loopOn=true;last=performance.now();requestAnimationFrame(loop);}
+  try{const o=await rpc('claim_offline');if(o&&o.secs>0){await refreshProfile();
+    modal('Selamat datang kembali!',`<p>Pasukanmu bertahan <b>${Math.floor(o.secs/60)} menit</b> saat kamu pergi.</p><p>🪙 +${fmt(o.gold)} Gold<br>⭐ +${fmt(o.exp)} EXP</p><button class="btn" style="width:100%" onclick="closeModal()">Lanjutkan</button>`);}}catch(e){}
+}
+
+/* ============ SINKRONISASI ============ */
+async function sync(){
+  while(S.syncing)await sleep(80);
+  if(!S.P)return;const sn={...S.pending};
+  if(!sn.gold&&!sn.exp&&!sn.kills&&S.stage===S.P.stage)return;
+  S.syncing=true;S.pending={gold:0,exp:0,kills:0};
+  const {data,error}=await sb.rpc('save_progress',{p_exp:sn.exp,p_gold:sn.gold,p_kills:sn.kills,p_stage:S.stage});
+  S.syncing=false;
+  if(error){S.pending.gold+=sn.gold;S.pending.exp+=sn.exp;S.pending.kills+=sn.kills;return;}
+  S.P=data;hud();
+}
+setInterval(()=>{if(S.P)sync();},15000);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)sync();});
+window.addEventListener('pagehide',()=>{sync();});
+
+/* ============ HUD ============ */
+function hud(){
+  if(!S.P)return;const {L,e}=curLevel(),rm=realmOf(L);
+  $('#avBtn').firstChild.nodeValue=S.P.avatar;$('#lvBadge').textContent=L;
+  $('#pName').textContent=S.P.username;$('#pRealm').textContent=`${rm.name} • Tingkat ${rm.s}`;
+  $('#expBar').style.width=(L>=S.cfg.max_level?100:Math.min(100,e/need(L)*100))+'%';
+  $('#gold').textContent=fmt(Number(S.P.gold)+S.pending.gold);$('#gems').textContent=fmt(S.P.gems);
+  const boss=S.stage%10===0;$('#stagebar').textContent=`Stage ${S.stage}${boss?' 👹 BOSS':''}  •  Musuh ${Math.min(B.k+1,5)}/5  •  Power ${fmt(S.hs?.power||0)}`;
+  if(L>S.lastL){const o=realmOf(S.lastL);toast(o.i<rm.i?`🌟 Menembus ke ${rm.name}!`:`⬆️ Naik level ${L}!`);beep(880,.2,'triangle',.05);S.lastL=L;refreshStats();}
+}
+
+/* ============ PERTEMPURAN ============ */
+const B={hp:1,enemy:null,k:0,aT:0,eT:0,cd:[0,0,0],fx:[],t:0,spawnT:0,hitFlash:0,heroSw:0,eSw:0,scroll:0};
+const cv=$('#cv'),cx=cv.getContext('2d');let W=300,Hh=300,loopOn=false,last=0,stars=[];
+function resize(){const r=$('#cvwrap').getBoundingClientRect();if(!r.width)return;const dpr=Math.min(window.devicePixelRatio||1,S.P?.settings?.quality==='low'?1:2);W=r.width;Hh=r.height;cv.width=W*dpr;cv.height=Hh*dpr;cx.setTransform(dpr,0,0,dpr,0,0);
+  stars=Array.from({length:S.P?.settings?.quality==='low'?25:70},()=>({x:Math.random()*W,y:Math.random()*Hh*.7,s:Math.random()*1.8+.4,v:Math.random()*8+3}));}
+window.addEventListener('resize',resize);
+
+function spawn(){
+  const s=S.stage,boss=s%10===0&&B.k===4;
+  B.enemy={x:W+40,boss,maxHp:(20*Math.pow(s,1.3)+10)*(boss?6:1),atk:(2+Math.pow(s,1.2)*1.2)*(boss?1.5:1),
+    gold:Math.floor((4+Math.pow(s,1.4)*1.5)*(boss?8:1)*S.cfg.gold_mult),exp:Math.floor((3+Math.pow(s,1.3))*(boss?8:1)*S.cfg.exp_mult),col:boss?'#f43f5e':['#ef4444','#f97316','#a855f7','#22d3ee'][s%4]};
+  B.enemy.hp=B.enemy.maxHp;B.aT=0;B.eT=0;
+}
+function fxText(x,y,txt,col,big){B.fx.push({k:'t',x,y,txt,col,life:.9,big});}
+function skillInv(i){const id=(S.P.equipment?.skills||[])[i];return id?invById(id):null;}
+function dealDam
